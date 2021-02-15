@@ -52,6 +52,14 @@
   (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
   (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
 
+
+;; LSP settings
+(setq lsp-enable-file-watchers t)
+
+;; CCLS settings
+(setq ccls-initialization-option
+        `(:cache (:directory ".ccls-cache")))
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
