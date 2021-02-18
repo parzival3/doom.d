@@ -60,6 +60,9 @@
 (setq ccls-initialization-option
         `(:cache (:directory ".ccls-cache")))
 
+;; Splash Image
+;; (setq fancy-splash-image "~/.doom.d/img/blackhole-lines.svg")
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
