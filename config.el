@@ -61,7 +61,7 @@
         `(:cache (:directory ".ccls-cache")))
 
 ;; Splash Image
-;; (setq fancy-splash-image "~/.doom.d/img/blackhole-lines.svg")
+(setq fancy-splash-image nil)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
