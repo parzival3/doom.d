@@ -63,6 +63,20 @@
 ;; Splash Image
 (setq fancy-splash-image nil)
 
+;; Python mode
+;;
+(use-package! python
+  :config
+  (setq python-shell-interpreter "python3"))
+
+;; Custom path for algorithm in MacOs
+;;
+(defun add_tolkit_env ()
+  "Add toolkit path"
+  (interactive)
+  (setenv "PATH" (concat "/Users/enrico/Documents/Git/Algorithms/toolkit/bin:" (getenv "PATH")))
+)
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
