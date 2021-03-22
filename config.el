@@ -69,6 +69,11 @@
   :config
   (setq python-shell-interpreter "python3"))
 
+;; add python as a org language
+(use-package! org
+  :config
+  (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
+
 ;; Custom path for algorithm in MacOs
 ;;
 (defun add_tolkit_env ()
