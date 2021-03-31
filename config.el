@@ -84,7 +84,7 @@
 
 ;; Spacemacs Themes
 
-(use-package! spacemacs-theme
+(package! spacemacs-theme
   :config
   (setq doom-theme 'spacemacs-dark))
 
