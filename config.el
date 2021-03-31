@@ -82,6 +82,13 @@
   (setenv "PATH" (concat "/Users/enrico/Documents/Git/Algorithms/toolkit/bin:" (getenv "PATH")))
 )
 
+;; Spacemacs Themes
+
+(use-package! spacemacs-theme
+  :config
+  (setq doom-theme 'spacemacs-dark))
+
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
