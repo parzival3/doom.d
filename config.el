@@ -74,20 +74,9 @@
   :config
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
-;; Custom path for algorithm in MacOs
-;;
-(defun add_tolkit_env ()
-  "Add toolkit path"
-  (interactive)
-  (setenv "PATH" (concat "/Users/enrico/Documents/Git/Algorithms/toolkit/bin:" (getenv "PATH")))
-)
 
 ;; Spacemacs Themes
-
-(package! spacemacs-theme
-  :config
-  (setq doom-theme 'spacemacs-dark))
-
+(setq doom-theme 'spacemacs-dark)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
