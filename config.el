@@ -25,7 +25,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+;; Spacemacs Themes
+(setq doom-theme 'spacemacs-dark)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -75,8 +76,6 @@
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
 
-;; Spacemacs Themes
-(setq doom-theme 'spacemacs-dark)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
