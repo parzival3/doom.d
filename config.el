@@ -75,7 +75,12 @@
   :config
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
-
+;; Org roam windows
+;;
+(use-package! org-roam
+  :config
+  (if (eq system-type 'windows-nt)
+      (setq org-roam-directory "W:/home/ento/Dropbox/org/roam")))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
