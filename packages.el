@@ -53,3 +53,4 @@
 ;(unpin! t)
 (package! org-fancy-priorities)
 (package! spacemacs-theme)
+(package! dired+)
