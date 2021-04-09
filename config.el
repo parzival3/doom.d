@@ -37,6 +37,28 @@
     (setq org-roam-directory "~/org/roam/")
     (setq org-directory "~/org/"))
 
+;; Magit or rather git is extreamlly slow on Windows, the only solution is to use
+;; a redefined status-buffer
+;; https://emacs.stackexchange.com/questions/19440/magit-extremely-slow-in-windows-how-do-i-optimize
+(use-package! magit
+  :config
+  (if (eq system-type 'windows-nt)
+      (progn
+        (setq exec-path (add-to-list 'exec-path "C:/Program Files (x86)/Git/bin"))
+        (setenv "PATH" (concat "C:\\Program Files (x86)\\Git\\bin;" (getenv "PATH")))
+        (define-derived-mode magit-staging-mode magit-status-mode "Magit staging"
+          "Mode for showing staged and unstaged changes."
+          :group 'magit-status)
+        (defun magit-staging-refresh-buffer ()
+          (magit-insert-section (status)
+        (magit-insert-untracked-files)
+        (magit-insert-unstaged-changes)
+        (magit-insert-staged-changes)))
+        (defun magit-staging ()
+                (interactive)
+                (magit-mode-setup #'magit-staging-mode))
+)))
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
