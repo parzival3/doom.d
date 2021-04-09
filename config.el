@@ -30,7 +30,12 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+;;
+(if (eq system-type 'windows-nt)
+    (progn (setq org-roam-directory "W:/home/ento/Dropbox/org/roam/")
+           (setq org-directory "W:/home/ento/Dropbox/org/"))
+    (setq org-roam-directory "~/org/roam/")
+    (setq org-directory "~/org/"))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -75,12 +80,6 @@
   :config
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
-;; Org roam windows
-;;
-(use-package! org-roam
-  :config
-  (if (eq system-type 'windows-nt)
-      (setq org-roam-directory "W:/home/ento/Dropbox/org/roam")))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
