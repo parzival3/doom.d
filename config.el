@@ -113,6 +113,11 @@
 (after! dired
   (use-package! dired+))
 
+;; Org auto tangle
+;;
+(use-package! org-auto-tangle
+  :hook (org-mode . org-auto-tangle-mode))
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
