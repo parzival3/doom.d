@@ -53,13 +53,12 @@
           :group 'magit-status)
         (defun magit-staging-refresh-buffer ()
           (magit-insert-section (status)
-        (magit-insert-untracked-files)
-        (magit-insert-unstaged-changes)
-        (magit-insert-staged-changes)))
+          (magit-insert-untracked-files)
+          (magit-insert-unstaged-changes)
+          (magit-insert-staged-changes)))
         (defun magit-staging ()
-                (interactive)
-                (magit-mode-setup #'magit-staging-mode))
-)))
+          (interactive)
+          (magit-mode-setup #'magit-staging-mode)))))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
