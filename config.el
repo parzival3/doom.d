@@ -108,11 +108,6 @@
   :config
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
-;; Dired
-;; Add dired+ after dired is load :-)
-(after! dired
-  (use-package! dired+))
-
 ;; Org auto tangle
 ;;
 (use-package! org-auto-tangle
@@ -134,3 +129,18 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;; Dired
+;; Add dired+ after dired is loaded :-)
+(if (eq system-type 'windows-nt)
+    (after! dired
+      (use-package! dired+)))
+
+;; JavaCC mode
+;;
+(use-package! javacc-mode
+  :defer t
+  :load-path "~/.emacs.d/externals/javacc-mode.el"
+  :init
+  (add-to-list 'auto-mode-alist '("\\.jj\\'" . javacc-mode))
+  (add-to-list 'auto-mode-alist '("\\.jjt\\'" . javacc-mode)))
