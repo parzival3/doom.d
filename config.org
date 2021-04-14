@@ -303,11 +303,6 @@
   :config
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
-;; Dired
-;; Add dired+ after dired is load :-)
-(after! dired
-  (use-package! dired+))
-
 ;; Org auto tangle
 ;;
 (use-package! org-auto-tangle
@@ -329,6 +324,86 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+#+end_src
+** Dired
+I have some truble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
+
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Dired
+;; Add dired+ after dired is loaded :-)
+(if (eq system-type 'windows-nt)
+    (after! dired
+      (use-package! dired+)))
+#+end_src
+
+** Extra pacakges
+*** Java-CC mode
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; JavaCC mode
+;;
+(use-package! javacc-mode
+  :defer t
+  :load-path "~/.emacs.d/externals/javacc-mode.el"
+  :init
+  (add-to-list 'auto-mode-alist '("\\.jj\\'" . javacc-mode))
+  (add-to-list 'auto-mode-alist '("\\.jjt\\'" . javacc-mode)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/externals/javacc-mode.el :filename javacc-mode.el :mkdirp yes
+;;; javacc-mode.el --- A major mode for editing javacc and jjtree files.
+;;* ----------------------------------------------------------------------------
+;;* "THE BEER-WARE LICENSE" (Revision 42):
+;;* <bwaite@connect.carleton.ca> wrote this file.
+;;* As long as you retain this notice you can do whatever you want with this
+;;* stuff. If we meet some day, and you think this stuff is worth it, you can
+;;* buy me a beer in return.
+;;*                                                               -Bryan Waite
+;;* (lovingly stolen from the original Beer-ware license by Poul-Henning Kamp)
+;;* ----------------------------------------------------------------------------
+;;
+;;;;Note that this has only been tested with GNU Emacs 22.1 but I assume it
+;;;;will work with any version that has java-mode
+;;;;Last updated Mon 25 Feb 2008 11:00:22 PM EST
+(defconst javacc-mode-version "0.1")
+(defconst javacc-author-name  "Bryan Waite")
+(defconst javacc-author-email "bwaite@connect.carleton.ca")
+(defconst javacc-web-page     "www.thesiteiwillonedayhave.com")
+
+;; To use java-font-lock-keywords, we need to require its mode first
+(eval-when-compile
+  (require 'cc-mode))
+
+;;this is pretty much all I'm adding
+(defconst javacc-keyword-re
+  (regexp-opt '("DEBUG_PARSER" "DEBUG_LOOKAHEAD" "DEBUG_TOKEN_MANAGER"
+                 "COMMON_TOKEN_ACTION" "IGNORE_CASE" "CHOICE_AMBIGUITY_CHECK"
+                 "OTHER_AMBIGUITY_CHECK" "STATIC LOOKAHEAD" "ERROR_REPORTING"
+                 "USER_TOKEN_MANAGER"  "USER_CHAR_STREAM" "JAVA_UNICODE_ESCAPE"
+                 "UNICODE_INPUT" "LOOKAHEAD" "STATIC" "BUILD_PARSER"
+                 "BUILD_TOKEN_MANAGER" "SANITY_CHECK" "FORCE_LA_CHECK"
+                 "PARSER_BEGIN" "PARSER_END"
+                 "TOKEN" "SKIP" "MORE" "SPECIAL_TOKEN"
+                 "DEBUG" "IGNORE_IN_BNF" "MULTI" "NODE_DEFAULT_VOID"
+                 "NODE_EXTENDS" "VISITOR" "options") 'words))
+
+;;;add new words to the java keywords (TOKEN shows up the wrong colour)
+(defvar javacc-font-lock-keywords
+  (append java-font-lock-keywords
+          (list (list javacc-keyword-re 1 font-lock-keyword-face)))
+  "Default highlighting expressions for JAVACC mode")
+
+;;;do the deriving
+(define-derived-mode javacc-mode java-mode "JavaCC"
+   "A major mode for editing javacc and jjtree files."
+   (set (make-local-variable 'font-lock-defaults)
+ 	'(javacc-font-lock-keywords)))
+
+(provide 'javacc-mode)
+
+;;; Also, some smart-compile entries to add to smart-compile-alist
+;;;   ("\\.jj\\'" . "javacc %f")
+;;;   ("\\.jjt\\'" . "jjtree %f")
+
 #+end_src
 * Packages
 #+begin_src emacs-lisp :tangle ~/.doom.d/packages.el :filename packages.el
