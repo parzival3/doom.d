@@ -102,6 +102,10 @@
   :config
   (org-babel-do-load-languages 'org-bable-load-languages '((python. t))))
 
+;; Dired
+;; Add dired+ after dired is load :-)
+(after! dired
+  (use-package! dired+))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
