@@ -92,7 +92,7 @@
   (if (eq system-type 'windows-nt)
       (progn (setq ccls-executable "ccls.exe")
               (setq ccls-initialization-options
-                    `(:cache (:directory "..\ccls-cache"))))))
+                    `(:cache (:directory "..\\ccls-cache"))))))
 
 ;; Splash Image
 (setq fancy-splash-image nil)
