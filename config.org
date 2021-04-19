@@ -113,7 +113,7 @@
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        ;;window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
-       ;;zen               ; distraction-free coding or writing
+       zen               ; distraction-free coding or writing
 
        :editor
        (evil +everywhere); come to the dark side, we have cookies
@@ -283,7 +283,8 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; Spacemacs Themes
-(setq doom-theme 'spacemacs-dark)
+;; (setq doom-theme 'spacemacs-dark)
+(setq doom-theme 'doom-spacegrey)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -386,7 +387,7 @@
 ;; they are implemented.
 #+end_src
 ** Dired
-I have some trouble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
+I h ave some trouble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
 
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; Dired
@@ -401,15 +402,20 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; JavaCC mode
 ;;
+(add-to-list 'auto-mode-alist '("\\.jj\\'" . javacc-mode))
+(add-to-list 'auto-mode-alist '("\\.jjt\\'" . javacc-mode))
+
+;; Add the externals directory to the load path
+(add-load-path! (concat doom-private-dir "externals/"))
+
 (use-package! javacc-mode
-  :defer t
-  :load-path "~/.emacs.d/externals/javacc-mode.el"
+  :load-path "externals/javacc-mode.el"
   :init
   (add-to-list 'auto-mode-alist '("\\.jj\\'" . javacc-mode))
   (add-to-list 'auto-mode-alist '("\\.jjt\\'" . javacc-mode)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/externals/javacc-mode.el :filename javacc-mode.el :mkdirp yes
+#+begin_src emacs-lisp :tangle ~/.doom.d/externals/javacc-mode.el :filename javacc-mode.el :mkdirp yes
 ;;; javacc-mode.el --- A major mode for editing javacc and jjtree files.
 ;;* ----------------------------------------------------------------------------
 ;;* "THE BEER-WARE LICENSE" (Revision 42):
@@ -513,10 +519,10 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
     (insert-file-contents template)
     (re-search-forward "$height" nil t)
     (replace-match (number-to-string height) nil nil)
-    ;; (dolist (substitution fancy-splash-template-colours)
-    ;;   (goto-char (point-min))
-    ;;   (while (re-search-forward (car substitution) nil t)
-    ;;     (replace-match (doom-color (cdr substitution)) nil nil)))
+     (dolist (substitution fancy-splash-template-colours)
+       (goto-char (point-min))
+       (while (re-search-forward (car substitution) nil t)
+         (replace-match (doom-color (cdr substitution)) nil nil)))
     (write-region nil nil
                   (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
 
@@ -684,4 +690,40 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 ;; Org
 ;; Auto tangle
 (package! org-auto-tangle)
+#+end_src
+
+** Scala
+Add command for cmpiling scala code :-)
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Sbt
+;;
+(map! :after scala-mode
+      :map scala-mode-map
+      :localleader
+      :nv "mc" #'sbt-command)
+#+end_src
+** Sbt
+Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Sbt
+;;
+(map! :after javacc-mode
+      :map javacc-mode-map
+      :localleader
+      :nv "mc" #'sbt-command)
+
+(use-package! sbt-mode
+  :config
+  (add-to-list 'sbt:program-options "-Dsbt.version=1.5.0")
+  ;; overload function until I don't find a better alternative :-
+  (defun sbt-command (command &optional focus)
+    (interactive
+    (progn
+        (setq sbt:command-history-temp
+            (ignore-errors (with-current-buffer (sbt:buffer-name) (ring-elements comint-input-ring))))
+
+        (list (completing-read (format "Command to run (default %s): " (sbt:get-previous-command))      '("javacc; test")))))
+    (sbt:command command focus)
+    (with-current-buffer (sbt:buffer-name)
+        (setq sbt:previous-command command))))
 #+end_src
