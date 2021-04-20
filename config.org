@@ -701,6 +701,14 @@ Add command for cmpiling scala code :-)
       :localleader
       :nv "mc" #'sbt-command)
 #+end_src
+Help sbt-mode to find the root of the scala project :-)
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Scala
+(use-package! scala-mode
+  :config
+
+  (setq sbt:buffer-project-root (projectile-project-root)))
+#+end_src
 ** Sbt
 Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -713,6 +721,8 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 
 (use-package! sbt-mode
   :config
+
+  (setq sbt:buffer-project-root (projectile-project-root))
   (add-to-list 'sbt:program-options "-Dsbt.version=1.5.0")
   ;; overload function until I don't find a better alternative :-
   (defun sbt-command (command &optional focus)
