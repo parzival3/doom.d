@@ -727,6 +727,8 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
   :hook
   (lambda () (ento/update-sbt-project-root))
   :config
+  ;; Make sbt a popup buffer
+  (set-popup-rule! "^\*sbt\*" :size 0.25 :vslot -4 :select t :quit nil :ttl 0)
   (add-to-list 'sbt:program-options "-Dsbt.version=1.5.0")
   ;; overload function until I don't find a better alternative :-
   (defun sbt-command (command &optional focus)
