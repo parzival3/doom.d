@@ -352,11 +352,6 @@
 ;; Splash Image
 (setq fancy-splash-image nil)
 
-;; Python mode
-;;
-(use-package! python
-  :config
-  (setq python-shell-interpreter "python3"))
 
 ;; add python as a org language
 (use-package! org
@@ -741,4 +736,25 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
     (sbt:command command focus)
     (with-current-buffer (sbt:buffer-name)
         (setq sbt:previous-command command))))
+#+end_src
+
+** Python
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Python mode
+;;
+(use-package! python
+  :config
+  (if (eq system-type 'windows-nt)
+      (setq python-shell-interpreter "python")
+      (setq python-shell-interpreter "python3"))
+
+  (if (eq system-type 'windows-nt)
+      (progn
+      (setq doom-modeline-env-python-executable "python")
+      (setq flycheck-python-flake8-executable "python")
+      (setq flycheck-python-mypy-executable "python")
+      (setq flycheck-json-python-json-executable "python")
+      (setq flycheck-python-pycompile-executable "python")
+      (setq flycheck-python-pylint-executable "python")
+      (setq flycheck-python-pyright-executable "python"))))
 #+end_src
