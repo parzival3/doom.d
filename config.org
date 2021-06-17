@@ -335,6 +335,7 @@
   :config
   (setq treemacs-python-executable "python"))
 #+end_src
+
 ** Magit
 
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -801,4 +802,17 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
       (setq flycheck-python-pycompile-executable "python")
       (setq flycheck-python-pylint-executable "python")
       (setq flycheck-python-pyright-executable "python"))))
+#+end_src
+** Os specific
+*** Windows
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+
+(defun ento/toggle-epos-connect-service ()
+    "Toggle EPOS Connect Service on Windows"
+    (interactive)
+    (shell-command-to-string "powershell.exe -noexit \" & 'C:\\Tools\\stopEC.ps1'\""))
+
+(map! :leader
+      :desc "Toggle EPOS Connect service"
+      "<F12>" #'ento/toggle-epos-connect-service)
 #+end_src
