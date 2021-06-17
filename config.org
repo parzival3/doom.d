@@ -217,7 +217,7 @@
        ;;php               ; perl's insecure younger brother
        plantuml            ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       ;;python            ; beautiful is better than ugly
+       python              ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
@@ -327,6 +327,13 @@
     (setq org-roam-directory "~/org/roam/")
     (setq org-directory "~/org/"))
 
+#+end_src
+
+** Treemacs config
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(use-package! tremacs
+  :config
+  (setq treemacs-python-executable "python"))
 #+end_src
 ** Magit
 
