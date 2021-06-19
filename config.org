@@ -331,7 +331,7 @@
 
 ** Treemacs config
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(use-package! tremacs
+(use-package! treemacs
   :config
   (setq treemacs-python-executable "python"))
 #+end_src
@@ -360,7 +360,10 @@
           (interactive)
           (magit-mode-setup #'magit-staging-mode)))))
 
+(map! :leader
+      "<f11>" #'smerge-keep-current)
 #+end_src
+
 ** Line number
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -802,6 +805,24 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
       (setq flycheck-python-pycompile-executable "python")
       (setq flycheck-python-pylint-executable "python")
       (setq flycheck-python-pyright-executable "python"))))
+#+end_src
+** Eshell
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/eshell-no-git-prompt-fn ()
+  "Generate the prompt string for eshell. Use for `eshell-prompt-function'."
+  (require 'shrink-path)
+  (concat (if (bobp) "" "\n")
+          (let ((pwd (eshell/pwd)))
+            (propertize (if (equal pwd "~")
+                            pwd
+                          (abbreviate-file-name (shrink-path-file pwd)))
+                        'face '+eshell-prompt-pwd))
+          (propertize " λ" 'face (if (zerop eshell-last-command-status) 'success 'error))
+          " "))
+
+(use-package! eshell
+  :config
+  (setq eshell-prompt-function 'ento/eshell-no-git-prompt-fn))
 #+end_src
 ** Os specific
 *** Windows
