@@ -513,6 +513,18 @@ I h ave some trouble with the default dired and ~Windows~ that's why for only Wi
 ;;;   ("\\.jjt\\'" . "jjtree %f")
 
 #+end_src
+*** Antlr mode
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Antlr mode
+;;
+(add-to-list 'auto-mode-alist '("\\.g4\\'" . antlr-mode))
+(use-package! antlr-mode)
+
+(map! :after antlr-mode
+      :map antlr-mode-map
+      :localleader
+      :nv "mc" #'sbt-command)
+#+end_src
 ** Splash screen
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defvar fancy-splash-image-template
@@ -780,7 +792,7 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
         (setq sbt:command-history-temp
             (ignore-errors (with-current-buffer (sbt:buffer-name) (ring-elements comint-input-ring))))
 
-        (list (completing-read (format "Command to run (default %s): " (sbt:get-previous-command))      '("javacc; test" "javacc" "test")))))
+        (list (completing-read (format "Command to run (default %s): " (sbt:get-previous-command))      '("compile" "test" "javacc; testOnly *DebugTests" "javacc; test" "javacc" "test")))))
     (sbt:command command focus)
     (with-current-buffer (sbt:buffer-name)
         (setq sbt:previous-command command))))
