@@ -420,7 +420,8 @@
   (if (eq system-type 'windows-nt)
       (progn (setq ccls-executable "ccls.exe")
               (setq ccls-initialization-options
-                    `(:cache (:directory "..\\ccls-cache"))))))
+                    `(:cache (:directory "..\\ccls-cache")
+                      :compilationDatabaseDirectory "C:\\Git\\collection-of-scripts")))))
 #+end_src
 ** Splash Image
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -847,5 +848,5 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 
 (map! :leader
       :desc "Toggle EPOS Connect service"
-      "<F12>" #'ento/toggle-epos-connect-service)
+      "<f12>" #'ento/toggle-epos-connect-service)
 #+end_src
