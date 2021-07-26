@@ -310,7 +310,12 @@
 ;; (setq doom-theme 'spacemacs-dark)
 (setq doom-theme 'doom-spacegrey)
 #+end_src
-
+** Doom modeline
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(use-package! doom-modeline
+  :config
+  (setq doom-modeline-vcs-max-length 75))
+#+end_src
 ** Org Roam directory config
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; If you use `org' and don't want your org files in the default location below,
