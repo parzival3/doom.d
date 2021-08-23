@@ -308,7 +308,9 @@
 ;; `load-theme' function. This is the default:
 ;; Spacemacs Themes
 ;; (setq doom-theme 'spacemacs-dark)
-(setq doom-theme 'doom-spacegrey)
+;; Spacegrey
+;; (setq doom-theme 'doom-spacegrey)
+(setq doom-theme 'doom-monokai-pro)
 #+end_src
 ** Doom modeline
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -835,7 +837,7 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
                             pwd
                           (abbreviate-file-name (shrink-path-file pwd)))
                         'face '+eshell-prompt-pwd))
-          (propertize " λ" 'face (if (zerop eshell-last-command-status) 'success 'error))
+          (propertize " λ " 'face (if (zerop eshell-last-command-status) 'success 'error))
           " "))
 
 (use-package! eshell
@@ -854,4 +856,15 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 (map! :leader
       :desc "Toggle EPOS Connect service"
       "<f12>" #'ento/toggle-epos-connect-service)
+#+end_src
+
+** Working with other applications
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/open-terminal-in-working-dir ()
+    "Open terminal in current working directory"
+    (interactive)
+    (call-process-shell-command "conhost.exe" nil 0))
+
+(map! :leader
+      "<f10>" #'ento/open-terminal-in-working-dir)
 #+end_src
