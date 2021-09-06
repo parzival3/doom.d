@@ -427,8 +427,8 @@
   (if (eq system-type 'windows-nt)
       (progn (setq ccls-executable "ccls.exe")
               (setq ccls-initialization-options
-                    `(:cache (:directory "..\\ccls-cache")
-                      :compilationDatabaseDirectory "C:\\Git\\collection-of-scripts")))))
+                    `(:cache (:directory "./_build/ccls-cache")
+                      :compilationDatabaseDirectory "./_build/")))))
 #+end_src
 ** Splash Image
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -820,7 +820,7 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
       (progn
       (setq doom-modeline-env-python-executable "python")
       (setq flycheck-python-flake8-executable "python")
-      (setq flycheck-python-mypy-executable "python")
+      (setq flycheck-python-mypy-executable "mypy")
       (setq flycheck-json-python-json-executable "python")
       (setq flycheck-python-pycompile-executable "python")
       (setq flycheck-python-pylint-executable "python")
@@ -859,12 +859,64 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 #+end_src
 
 ** Working with other applications
+*** General terminal for windows
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun ento/open-terminal-in-working-dir ()
     "Open terminal in current working directory"
     (interactive)
-    (call-process-shell-command "conhost.exe" nil 0))
+    (call-process-shell-command "wt powershell.exe" nil 0))
 
 (map! :leader
       "<f10>" #'ento/open-terminal-in-working-dir)
+#+end_src
+*** Running skipperlite
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/run-skipperlite-in-working-dir ()
+    "Open terminal in current working directory"
+    (interactive)
+    (call-process-shell-command "wt skipperlite-async.exe" nil 0))
+
+(map! :leader
+      "<f9>" #'ento/run-skipperlite-in-working-dir)
+#+end_src
+
+*** Downloading firmwares
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/download-firmwares (device)
+    "Download firmwares to defualt directory for DEVICE"
+    (interactive "sDevice firmware to downlaods ")
+    (message device)
+    (let ((concat_dev (prin1-to-string device)))
+                     (call-process-shell-command (concat "wt python.exe C:\\Git\\collection-of-scripts\\download_fw_from_EC.py --extract_path C:\\Firmwares\\ --device " concat_dev) nil 0)))
+
+#+end_src
+
+** Remove all the whitespaces after saving
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(add-hook 'before-save-hook
+          'delete-trailing-whitespace)
+#+end_src
+
+** File encoding
+Set the prefered file encodign to utf-8 in any operating system
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(prefer-coding-system 'utf-8-unix)
+#+end_src
+*** Commands on filesystem
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun dos2unix ()
+  "Convert a DOS formatted text buffer to UNIX format"
+  (interactive)
+  (set-buffer-file-coding-system 'undecided-unix nil))
+
+(defun unix2dos ()
+  "Convert a UNIX formatted text buffer to DOS format"
+  (interactive)
+  (set-buffer-file-coding-system 'undecided-dos nil))
+#+end_src
+
+** Elis utils
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun wrap-string (arround string)
+  (concat arround (concat string arround)))
 #+end_src
