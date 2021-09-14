@@ -776,9 +776,6 @@ Help sbt-mode to find the root of the scala project :-)
   (interactive)
   (setq sbt:buffer-project-root (projectile-project-root)))
 
-(use-package! scala-mode
-  :hook
-  (lambda () (ento/update-sbt-project-root)))
 #+end_src
 ** Sbt
 Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
@@ -791,23 +788,12 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
       :nv "mc" #'sbt-command)
 
 (use-package! sbt-mode
-  :hook
-  (lambda () (ento/update-sbt-project-root))
   :config
   ;; Make sbt a popup buffer
   (set-popup-rule! "^\*sbt\*" :size 0.25 :vslot -4 :select t :quit nil :ttl 0)
   (add-to-list 'sbt:program-options "-Dsbt.version=1.5.0")
-  ;; overload function until I don't find a better alternative :-
-  (defun sbt-command (command &optional focus)
-    (interactive
-    (progn
-        (setq sbt:command-history-temp
-            (ignore-errors (with-current-buffer (sbt:buffer-name) (ring-elements comint-input-ring))))
-
-        (list (completing-read (format "Command to run (default %s): " (sbt:get-previous-command))      '("compile" "test" "javacc; testOnly *DebugTests" "javacc; test" "javacc" "test")))))
-    (sbt:command command focus)
-    (with-current-buffer (sbt:buffer-name)
-        (setq sbt:previous-command command))))
+  (advice-add 'sbt-command :after #'(lambda (x) (other-window -1))))
+  (advice-remove 'sbt-command #'(lambda () (other-window -1)))
 #+end_src
 
 ** Python
