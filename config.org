@@ -63,6 +63,7 @@
 (package! org-fancy-priorities)
 (package! spacemacs-theme)
 (package! dired+)
+(package! rg)
 #+end_src
 * Init
 #+begin_src emacs-lisp :tangle ~/.doom.d/init.el :filename init.el
@@ -314,7 +315,8 @@
 ;; (setq doom-theme 'spacemacs-dark)
 ;; Spacegrey
 ;; (setq doom-theme 'doom-spacegrey)
-(setq doom-theme 'doom-monokai-pro)
+;;(setq doom-theme 'doom-monokai-pro)
+(setq doom-theme 'doom-monokai-machine)
 #+end_src
 ** Doom modeline
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -448,6 +450,7 @@ I h ave some trouble with the default dired and ~Windows~ that's why for only Wi
 ;; Add dired+ after dired is loaded :-)
 (if (eq system-type 'windows-nt)
     (after! dired
+      (use-package! rg)
       (use-package! dired+)))
 #+end_src
 
@@ -874,8 +877,18 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun ento/download-firmwares (device)
     "Download firmwares to defualt directory for DEVICE"
-    (interactive "sDevice firmware to downlaods ")
+    (interactive "sDevice firmware to downlaods: ")
     (message device)
+    (let ((concat_dev (prin1-to-string device)))
+                     (call-process-shell-command (concat "wt python.exe C:\\Git\\collection-of-scripts\\download_fw_from_EC.py --extract_path C:\\Firmwares\\ --log_file C:\\Git\\dci\\ --device " concat_dev) nil 0)))
+
+#+end_src
+*** Run Rico
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/run-rico ()
+    "Run rico"
+    (interactive)
+    ()
     (let ((concat_dev (prin1-to-string device)))
                      (call-process-shell-command (concat "wt python.exe C:\\Git\\collection-of-scripts\\download_fw_from_EC.py --extract_path C:\\Firmwares\\ --device " concat_dev) nil 0)))
 
@@ -905,7 +918,7 @@ Set the prefered file encodign to utf-8 in any operating system
   (set-buffer-file-coding-system 'undecided-dos nil))
 #+end_src
 
-** Elis utils
+** Elisp utils
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun wrap-string (arround string)
   (concat arround (concat string arround)))
