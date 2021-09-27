@@ -433,8 +433,8 @@
   (if (eq system-type 'windows-nt)
       (progn (setq ccls-executable "ccls.exe")
               (setq ccls-initialization-options
-                    `(:cache (:directory "./_build/ccls-cache")
-                      :compilationDatabaseDirectory "./_build/")))))
+                    `(:cache (:directory "C:\\Cache\\")
+                      :compilationDatabaseDirectory "./build/")))))
 #+end_src
 ** Splash Image
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -916,6 +916,12 @@ Set the prefered file encodign to utf-8 in any operating system
   "Convert a UNIX formatted text buffer to DOS format"
   (interactive)
   (set-buffer-file-coding-system 'undecided-dos nil))
+#+end_src
+
+** Dci
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(if (file-exists-p "C:\\Git\\dci-emacs\\dci.el")
+    (load "C:\\Git\\dci-emacs\\dci.el"))
 #+end_src
 
 ** Elisp utils
