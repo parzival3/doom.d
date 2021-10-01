@@ -867,7 +867,7 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 (defun ento/run-skipperlite-in-working-dir ()
     "Open terminal in current working directory"
     (interactive)
-    (call-process-shell-command "wt skipperlite-async.exe" nil 0))
+    (call-process-shell-command "wt skipperlite-async.exe -l 5" nil 0))
 
 (map! :leader
       "<f9>" #'ento/run-skipperlite-in-working-dir)
@@ -928,4 +928,13 @@ Set the prefered file encodign to utf-8 in any operating system
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun wrap-string (arround string)
   (concat arround (concat string arround)))
+#+end_src
+
+** Calc
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento-calc-hex ()
+  "Run calc in hex."
+  (interactive)
+  (calc)
+  (calc-hex-radix))
 #+end_src
