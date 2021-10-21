@@ -97,7 +97,7 @@
        :ui
        ;;deft              ; notational velocity for Emacs
        doom                ; what makes DOOM look the way it does
-       doom-dashboard      ; a nifty splash screen for Emacs
+       ;; doom-dashboard      ; a nifty splash screen for Emacs
        ;; doom-quit        ; DOOM quit-message prompts when you quit Emacs
        ;;(emoji +unicode)  ; 🙂
        ;;fill-column       ; a `fill-column' indicator
@@ -109,21 +109,21 @@
        modeline            ; snazzy, Atom-inspired modeline, plus API
        ;;nav-flash         ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
-       ophints             ; highlight the region an operation acts on
+       ;;ophints             ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       treemacs            ; a project drawer, like neotree but cooler
+       ;;treemacs            ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
-       vc-gutter           ; vcs diff in the fringe
+       ;;vc-gutter           ; vcs diff in the fringe
        vi-tilde-fringe     ; fringe tildes to mark beyond EOB
        ;;window-select     ; visually switch windows
        workspaces          ; tab emulation, persistence & separate workspaces
-       zen                 ; distraction-free coding or writing
+       ;;zen                 ; distraction-free coding or writing
 
        :editor
        (evil +everywhere)  ; come to the dark side, we have cookies
        file-templates      ; auto-snippets for empty files
-       fold                ; (nigh) universal code folding
+       ;;fold                ; (nigh) universal code folding
        ;;(format +onsave)  ; automated prettiness
        ;;god               ; run Emacs commands without modifier keys
        ;;lispy             ; vim for lisp, for people who don't like vim
@@ -131,7 +131,7 @@
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
-       snippets            ; my elves. They type so I don't have to
+       ;;snippets            ; my elves. They type so I don't have to
        ;;word-wrap         ; soft wrapping with language-aware indent
 
        :emacs
@@ -139,7 +139,7 @@
        electric            ; smarter, keyword-based electric-indent
        ;;ibuffer           ; interactive buffer management
        undo                ; persistent, smarter undo for your inevitable mistakes
-       vc                  ; version-control and Emacs, sitting in a tree
+       ;;vc                  ; version-control and Emacs, sitting in a tree
 
        :term
        eshell              ; the elisp shell that works everywhere
@@ -149,7 +149,7 @@
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       spell               ; tasing you for misspelling mispelling
+       ;;spell               ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools
@@ -166,7 +166,7 @@
        magit               ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
-       pdf               ; pdf enhancements
+       ;;pdf               ; pdf enhancements
        ;;prodigy           ; FIXME managing external services & code builders
        ;;rgb               ; creating color strings
        ;;taskrunner        ; taskrunner for all your projects
@@ -217,7 +217,6 @@
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org
-        +jira
         +roam)             ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        plantuml            ; diagrams for confusing people more
@@ -230,7 +229,7 @@
        ;;rst               ; ReST in peace
        ;;(ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       scala               ; java, but good
+       ;;scala               ; java, but good
        ;;scheme            ; a fully conniving family of lisps
        sh                  ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
@@ -248,7 +247,7 @@
        :app
        ;;calendar
        ;;irc               ; how neckbeards socialize
-       (rss +org)          ; emacs as an RSS reader
+       ;;(rss +org)          ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
@@ -304,6 +303,15 @@
         (eq system-type 'gnu/linux))
     (setq doom-font (font-spec :family "Hack" :size 16 :weight 'semi-light)
           doom-variable-pitch-font (font-spec :family "sans" :size 14)))
+
+(defun ento/enable-font-windows-server (frame)
+    (if (display-graphic-p frame)
+        (progn
+          (setq doom-font (font-spec :family "Hack" :size 16 :weight 'semi-light)
+                doom-variable-pitch-font (font-spec :family "sans" :size 14)))))
+
+(mapc 'ento/enable-font-windows-server (frame-list))
+(add-hook 'after-make-frame-functions 'ento/enable-font-windows-server)
 #+end_src
 
 ** Theme config
@@ -373,8 +381,6 @@
           (interactive)
           (magit-mode-setup #'magit-staging-mode)))))
 
-(map! :leader
-      "<f11>" #'smerge-keep-current)
 #+end_src
 
 ** Line number
@@ -421,7 +427,7 @@
 ** LSP
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; LSP settings
-(setq lsp-enable-file-watchers t)
+(setq lsp-enable-file-watchers nil)
 #+end_src
 
 ** CCLS
@@ -434,7 +440,8 @@
       (progn (setq ccls-executable "ccls.exe")
               (setq ccls-initialization-options
                     `(:cache (:directory "C:\\Cache\\")
-                      :compilationDatabaseDirectory "./build/")))))
+                      :compilationDatabaseDirectory "./build/"
+                      :clang (:resourceDir "C:\\Program Files\\LLVM\\lib\\clang\\13.0.0\\"))))))
 #+end_src
 ** Splash Image
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -443,7 +450,7 @@
 #+end_src
 
 ** Dired
-I h ave some trouble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
+I have some trouble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
 
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; Dired
@@ -819,6 +826,7 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
       (setq flycheck-python-pylint-executable "python")
       (setq flycheck-python-pyright-executable "python"))))
 #+end_src
+
 ** Eshell
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun ento/eshell-no-git-prompt-fn ()
@@ -830,7 +838,7 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
                             pwd
                           (abbreviate-file-name (shrink-path-file pwd)))
                         'face '+eshell-prompt-pwd))
-          (propertize " λ " 'face (if (zerop eshell-last-command-status) 'success 'error))
+          (propertize " > " 'face (if (zerop eshell-last-command-status) 'success 'error))
           " "))
 
 (use-package! eshell
@@ -857,8 +865,15 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 (defun ento/open-terminal-in-working-dir ()
     "Open terminal in current working directory"
     (interactive)
-    (call-process-shell-command "wt powershell.exe" nil 0))
+    (call-process-shell-command "wt C:\\Program Files\\PowerShell\\7\\pwsh.exe" nil 0))
 
+(defun ento/open-cmd-terminal-in-working-dir ()
+    "Open terminal in current working directory"
+    (interactive)
+    (call-process-shell-command "wt cmd.exe" nil 0))
+
+(map! :leader
+      "<f8>" #'ento/open-cmd-terminal-in-working-dir)
 (map! :leader
       "<f10>" #'ento/open-terminal-in-working-dir)
 #+end_src
@@ -871,27 +886,6 @@ Since I have a Mac M1 I need a newer version of sbt grather then 1.5.0
 
 (map! :leader
       "<f9>" #'ento/run-skipperlite-in-working-dir)
-#+end_src
-
-*** Downloading firmwares
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(defun ento/download-firmwares (device)
-    "Download firmwares to defualt directory for DEVICE"
-    (interactive "sDevice firmware to downlaods: ")
-    (message device)
-    (let ((concat_dev (prin1-to-string device)))
-                     (call-process-shell-command (concat "wt python.exe C:\\Git\\collection-of-scripts\\download_fw_from_EC.py --extract_path C:\\Firmwares\\ --log_file C:\\Git\\dci\\ --device " concat_dev) nil 0)))
-
-#+end_src
-*** Run Rico
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(defun ento/run-rico ()
-    "Run rico"
-    (interactive)
-    ()
-    (let ((concat_dev (prin1-to-string device)))
-                     (call-process-shell-command (concat "wt python.exe C:\\Git\\collection-of-scripts\\download_fw_from_EC.py --extract_path C:\\Firmwares\\ --device " concat_dev) nil 0)))
-
 #+end_src
 
 ** Remove all the whitespaces after saving
@@ -932,9 +926,5 @@ Set the prefered file encodign to utf-8 in any operating system
 
 ** Calc
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(defun ento-calc-hex ()
-  "Run calc in hex."
-  (interactive)
-  (calc)
-  (calc-hex-radix))
+(map! :desc "Run calculator." "<f4>" #'calc)
 #+end_src
