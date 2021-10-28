@@ -388,7 +388,7 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 (defun ento/toggle-epos-connect-service ()
     "Toggle EPOS Connect Service on Windows"
     (interactive)
-    (shell-command-to-string "powershell.exe -noexit \" & 'C:\\Tools\\stopEC.ps1'\""))
+    (shell-command-to-string "powershell.exe -noexit \" & 'C:\\Git\\dci-emacs\\stopEC.ps1'\""))
 
 (map! :leader
       :desc "Toggle EPOS Connect service"
