@@ -215,24 +215,6 @@
   (setq doom-modeline-vcs-max-length 75))
 #+end_src
 
-** Org Roam directory config
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-;;
-(if (eq system-type 'windows-nt)
-    (if (file-exists-p "W:/home/ento/Dropbox/org/")
-        (progn (setq org-roam-directory "W:/home/ento/Dropbox/org/roam/")
-            (setq org-directory "W:/home/ento/Dropbox/org/"))
-      (make-directory "~/Documents/org" t)
-      (make-directory "~/Documents/org/roam" t)
-      (setq org-roam-directory "~/Documents/org/roam")
-      (setq org-directory "~/Documents/org"))
-    (setq org-roam-directory "~/org/roam/")
-    (setq org-directory "~/org/"))
-
-#+end_src
-
 ** Magit
 
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -288,19 +270,6 @@
   :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
-** PlantUml
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-;; PlantUml
-;;
-(use-package! plantuml-mode
-  :after org
-  :config
-  (setq plantuml-default-exec-mode 'jar)
-  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))
-  (org-babel-do-load-languages 'org-babel-load-languages '((plantuml . t))))
-
-#+end_src
-
 ** LSP
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;; LSP settings
@@ -340,7 +309,6 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 ;; Auto tangle
 (package! org-auto-tangle)
 #+end_src
-
 
 ** Python
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -452,12 +420,6 @@ Set the prefered file encodign to utf-8 in any operating system
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (if (file-exists-p "C:\\Git\\dci-emacs\\dci.el")
     (load "C:\\Git\\dci-emacs\\dci.el"))
-#+end_src
-
-** Elisp utils
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(defun wrap-string (arround string)
-  (concat arround (concat string arround)))
 #+end_src
 
 ** Calc
