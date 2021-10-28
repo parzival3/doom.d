@@ -122,10 +122,7 @@
        (cc                 ; C/C++/Obj-C madness
         +lsp)
        emacs-lisp          ; drown in parentheses
-       markdown            ; writing docs for people to ignore
-       (org
-        +roam)             ; organize your plain life in plain text
-       plantuml            ; diagrams for confusing people more
+       org                 ; organize your plain life in plain text
        python              ; beautiful is better than ugly
        sh                  ; she sells {ba,z,fi}sh shells on the C xor
        yaml                ; JSON, but readable
