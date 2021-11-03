@@ -420,6 +420,7 @@ Set the prefered file encodign to utf-8 in any operating system
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (if (file-exists-p "C:\\Git\\dci-emacs\\dci.el")
     (load "C:\\Git\\dci-emacs\\dci.el"))
+(map! :desc "Run kowalski." "<f5>" #'dci-run-kowalski)
 #+end_src
 
 ** Calc
