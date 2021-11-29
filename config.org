@@ -119,8 +119,8 @@
        tty                 ; improve the terminal Emacs experience
 
        :lang
-       (cc                 ; C/C++/Obj-C madness
-        +lsp)
+       (cc)                 ; C/C++/Obj-C madness
+         ;;+lsp)
        emacs-lisp          ; drown in parentheses
        org                 ; organize your plain life in plain text
        python              ; beautiful is better than ugly
@@ -302,15 +302,18 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
       (use-package! rg)
       (use-package! dired+)))
 
-(map! :after dired-mode
-    :map dired-mode-map
-    :leader
-    :nv "<f1>" '#ento/run-process-as-admin)
-
 (defun ento/run-process-as-admin ()
+  "Run the program under the dired cursor as administrator in windows."
   (interactive)
-  (let ((executable-name (dired-get-filename t t)))
-    (start-process executable-name nil "elevate.exe"  "-c" (concat default-directory executable-name))))
+  (if (eq system-type 'windows-nt)
+    (let ((executable-name (dired-get-filename t t)))
+    (start-process executable-name nil "elevate.exe"  "-c" (concat default-directory executable-name)))
+    (message "This action is not supported on your system %s" (symbol-name system-type))))
+
+(map! :after dired-mode
+      :map dired-mode-map
+      :leader
+      "<f1>" #'ento/run-process-as-admin)
 
 #+end_src
 
