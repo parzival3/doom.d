@@ -205,7 +205,8 @@
 ;; (setq doom-theme 'doom-spacegrey)
 ;;(setq doom-theme 'doom-monokai-pro)
 ;;(setq doom-theme 'doom-monokai-machine)
-(setq doom-theme 'doom-Iosvkem)
+;;(setq doom-theme 'doom-Iosvkem)
+(setq doom-theme 'doom-opera)
 
 #+end_src
 ** Doom modeline
@@ -300,6 +301,17 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
     (after! dired
       (use-package! rg)
       (use-package! dired+)))
+
+(map! :after dired-mode
+    :map dired-mode-map
+    :leader
+    :nv "<f1>" '#ento/run-process-as-admin)
+
+(defun ento/run-process-as-admin ()
+  (interactive)
+  (let ((executable-name (dired-get-filename t t)))
+    (start-process executable-name nil "elevate.exe"  "-c" (concat default-directory executable-name))))
+
 #+end_src
 
 ** Org
@@ -421,6 +433,7 @@ Set the prefered file encodign to utf-8 in any operating system
 (if (file-exists-p "C:\\Git\\dci-emacs\\dci.el")
     (load "C:\\Git\\dci-emacs\\dci.el"))
 (map! :desc "Run kowalski." "<f5>" #'dci-run-kowalski)
+(map! :desc "Add dci log." "<f2>" #'dci-new-log-buffer)
 #+end_src
 
 ** Calc
