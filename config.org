@@ -14,13 +14,6 @@
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 
-;; Groovy
-(package! groovy-mode)
-;; STM32-parzival
-
-(package! stm32
-  :recipe (:host github :repo "parzival3/stm32-emacs"))
-
 ;; To install a package directly from a remote git repo, you must specify a
 ;; `:recipe'. You'll find documentation on what `:recipe' accepts here:
 ;; https://github.com/raxod502/straight.el#the-recipe-format
@@ -111,16 +104,15 @@
        :tools
        (eval +overlay)     ; run code, run (also, repls)
        lookup              ; navigate your code and its documentation
-       lsp
        magit               ; a git porcelain for Emacs
 
        :os
        (:if IS-MAC macos)  ; improve compatibility with macOS
        tty                 ; improve the terminal Emacs experience
 
+       ;;(cc                 ; C/C++/Obj-C madness
+       ;;+lsp)
        :lang
-       (cc)                 ; C/C++/Obj-C madness
-         ;;+lsp)
        emacs-lisp          ; drown in parentheses
        org                 ; organize your plain life in plain text
        python              ; beautiful is better than ugly
@@ -228,6 +220,11 @@
       (progn
         (setq exec-path (add-to-list 'exec-path "C:/Program Files (x86)/Git/bin"))
         (setenv "PATH" (concat "C:\\Program Files (x86)\\Git\\bin;" (getenv "PATH")))
+        (setq magit-diff-highlight-hunk-body nil)
+        (setq magit-diff-refine-hunk nil)
+        (setq magit-diff-highlight-indentation nil)
+        (setq magit-diff-highlight-trailing nil)
+        (setq magit-diff-paint-whitespace nil)
         (define-derived-mode magit-staging-mode magit-status-mode "Magit staging"
           "Mode for showing staged and unstaged changes."
           :group 'magit-status)
@@ -277,8 +274,9 @@
 (setq lsp-enable-file-watchers nil)
 #+end_src
 
-** CCLS
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+** CCLS DISABLED
+#emacs-lisp :noeval :tangle ~/.doom.d/config.el :filename config.el
+#+begin_src emacs-lisp
 ;; CCLS settings
 ;;
 (use-package! ccls
@@ -291,6 +289,11 @@
                       :clang (:resourceDir "C:\\Program Files\\LLVM\\lib\\clang\\13.0.0\\"))))))
 #+end_src
 
+** CC/++
+
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(setq flycheck-global-modes '(not c++-mode cc-mode))
+#+end_src
 ** Dired
 I have some trouble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
 
