@@ -305,6 +305,10 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
       (use-package! rg)
       (use-package! dired+)))
 
+(use-package! dired
+ :config
+ (setq dired-omit-extensions (delete ".bin" dired-omit-extensions)))
+
 (defun ento/run-process-as-admin ()
   "Run the program under the dired cursor as administrator in windows."
   (interactive)
@@ -365,9 +369,95 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 
 (use-package! eshell
   :config
+  (setq eshell-prompt-regexp "^.* > ")
   (setq eshell-prompt-function 'ento/eshell-no-git-prompt-fn))
 #+end_src
 ** Os specific
+*** CL Build tools
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defvar ento/default-windows-path (getenv "PATH")
+  "Store the default windows path before using build tools")
+
+(defun msbuild-2019-x86-setup ()
+  "Set enviorment variables to load Microsoft Visual C++ Compiler (MSVC 32 bits)"
+  (interactive)
+  (message "Setting 32 bits MSVC building tools.")
+  (setenv "PATH" ento/default-windows-path)
+  (setenv "INCLUDE"
+          (concat
+           "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\ATLMFC\\include"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\include"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\include\\um"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\shared"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\um"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\winrt"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\cppwinrt"
+           ))
+
+  (setenv "LIB"
+          (concat
+           "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\ATLMFC\\lib\\x64"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\lib\\um\\x64"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\lib\\10.0.19041.0\\ucrt\\x64"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\lib\\10.0.19041.0\\um\\x64"
+           ))
+
+  (setenv  "LIBPATH"
+           (concat
+            "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\ATLMFC\\lib\\x64"
+            ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64"
+            ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x86\\store\\references"
+            ";" "C:\\Program Files (x86)\\Windows Kits\\10\\UnionMetadata\\10.0.19041.0"
+            ";" "C:\\Program Files (x86)\\Windows Kits\\10\\References\\10.0.19041.0"
+            ";" "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319"
+            ))
+
+  (setenv "PATH"
+          (concat
+           (getenv "PATH")
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\Extensions\\Microsoft\\IntelliCode\\CLI"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\VC\\VCPackages"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\bin\\Roslyn"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\bin"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Performance Tools\\x64"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Performance Tools"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Common\\VSPerfCollectionTools\\vs2019\\x64"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Common\\VSPerfCollectionTools\\vs2019"
+           ";" "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v10.0A\\bin\\NETFX 4.8 Tools\\x64"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\FSharp\\Tools"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\devinit"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x64"
+           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin"
+           ";" "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\Llvm\\bin"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja"
+           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\VC\\Linux\\bin\\ConnectionManagerExe"
+           ))
+  (setq eshell-env-path (getenv "PATH")))
+#+end_src
+
+*** Gaming
+
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/lunch-gaming-suite ()
+  "Function for lunching gaming suite."
+  (interactive)
+  (start-process "GamingSuite" nil "C:/Git/pc_gaming_suite/Solution/Release/EposGamingSuite.exe"))
+
+(map! "<f3>"
+  #'ento/lunch-gaming-suite)
+#+end_src
+
 *** Windows
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 
