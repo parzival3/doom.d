@@ -469,6 +469,9 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 (map! :leader
       :desc "Toggle EPOS Connect service"
       "<f12>" #'ento/toggle-epos-connect-service)
+
+(when (eq system-type 'windows-nt)
+  (setq delete-by-moving-to-trash t))
 #+end_src
 
 ** Working with other applications
