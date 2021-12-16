@@ -59,69 +59,71 @@
 #+end_src
 * Init
 #+begin_src emacs-lisp :tangle ~/.doom.d/init.el :filename init.el
-;;; init.el -*- lexical-binding: t; -*-
+  ;;; init.el -*- lexical-binding: t; -*-
 
-;; This file controls what Doom modules are enabled and what order they load
-;; in. Remember to run 'doom sync' after modifying it!
+  ;; This file controls what Doom modules are enabled and what order they load
+  ;; in. Remember to run 'doom sync' after modifying it!
 
-;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
-;;      documentation. There you'll find a "Module Index" link where you'll find
-;;      a comprehensive list of Doom's modules and what flags they support.
+  ;; NOTE Press 'SPC h d h' (or 'C-h d h' for non-vim users) to access Doom's
+  ;;      documentation. There you'll find a "Module Index" link where you'll find
+  ;;      a comprehensive list of Doom's modules and what flags they support.
 
-;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
-;;      'C-c c k' for non-vim users) to view its documentation. This works on
-;;      flags as well (those symbols that start with a plus).
-;;
-;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
-;;      directory (for easy access to its source code).
+  ;; NOTE Move your cursor over a module's name (or its flags) and press 'K' (or
+  ;;      'C-c c k' for non-vim users) to view its documentation. This works on
+  ;;      flags as well (those symbols that start with a plus).
+  ;;
+  ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
+  ;;      directory (for easy access to its source code).
 
-(doom!
-       :completion
-       company             ; the ultimate code completion backend
-       vertico             ; the search engine of the future
+  (doom!
+	 :completion
+	 company             ; the ultimate code completion backend
+	 vertico             ; the search engine of the future
 
-       :ui
-       doom                ; what makes DOOM look the way it does
-       hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       modeline            ; snazzy, Atom-inspired modeline, plus API
-       (popup +defaults)   ; tame sudden yet inevitable temporary windows
-       workspaces          ; tab emulation, persistence & separate workspaces
+	 :ui
+	 doom                ; what makes DOOM look the way it does
+	 hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+	 modeline            ; snazzy, Atom-inspired modeline, plus API
+	 (popup +defaults)   ; tame sudden yet inevitable temporary windows
+	 workspaces          ; tab emulation, persistence & separate workspaces
 
-       :editor
-       (evil +everywhere)  ; come to the dark side, we have cookies
-       file-templates      ; auto-snippets for empty files
+	 :editor
+	
+	 (evil +everywhere)  ; come to the dark side, we have cookies
+         fold
+	 file-templates      ; auto-snippets for empty files
 
-       :emacs
-       dired               ; making dired pretty [functional]
-       undo                ; persistent, smarter undo for your inevitable mistakes
+	 :emacs
+	 dired               ; making dired pretty [functional]
+	 undo                ; persistent, smarter undo for your inevitable mistakes
 
-       :term
-       eshell              ; the elisp shell that works everywhere
+	 :term
+	 eshell              ; the elisp shell that works everywhere
 
-       :checkers
-       syntax              ; tasing you for every semicolon you forget
+	 :checkers
+	 syntax              ; tasing you for every semicolon you forget
 
-       :tools
-       (eval +overlay)     ; run code, run (also, repls)
-       lookup              ; navigate your code and its documentation
-       magit               ; a git porcelain for Emacs
+	 :tools
+	 (eval +overlay)     ; run code, run (also, repls)
+	 lookup              ; navigate your code and its documentation
+	 magit               ; a git porcelain for Emacs
 
-       :os
-       (:if IS-MAC macos)  ; improve compatibility with macOS
-       tty                 ; improve the terminal Emacs experience
+	 :os
+	 (:if IS-MAC macos)  ; improve compatibility with macOS
+	 tty                 ; improve the terminal Emacs experience
 
-       ;;(cc                 ; C/C++/Obj-C madness
-       ;;+lsp)
-       :lang
-       emacs-lisp          ; drown in parentheses
-       org                 ; organize your plain life in plain text
-       python              ; beautiful is better than ugly
-       sh                  ; she sells {ba,z,fi}sh shells on the C xor
-       yaml                ; JSON, but readable
+	 ;;(cc                 ; C/C++/Obj-C madness
+	 ;;+lsp)
+	 :lang
+	 emacs-lisp          ; drown in parentheses
+	 (org +jira)         ; organize your plain life in plain text
+	 python              ; beautiful is better than ugly
+	 sh                  ; she sells {ba,z,fi}sh shells on the C xor
+	 yaml                ; JSON, but readable
 
-       :config
-       literate
-       (default +bindings +smartparens))
+	 :config
+	 literate
+	 (default +bindings +smartparens))
 #+end_src
 
 #+RESULTS:
@@ -275,8 +277,7 @@
 #+end_src
 
 ** CCLS DISABLED
-#emacs-lisp :noeval :tangle ~/.doom.d/config.el :filename config.el
-#+begin_src emacs-lisp
+;;#+begin_src emacs-lisp
 ;; CCLS settings
 ;;
 (use-package! ccls
@@ -287,7 +288,7 @@
                     `(:cache (:directory "C:\\Cache\\")
                       :compilationDatabaseDirectory "./build/"
                       :clang (:resourceDir "C:\\Program Files\\LLVM\\lib\\clang\\13.0.0\\"))))))
-#+end_src
+;;#+end_src
 
 ** CC/++
 
@@ -307,7 +308,7 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 
 (use-package! dired
  :config
- (setq dired-omit-extensions (delete ".bin" dired-omit-extensions)))
+ (setq dired-omit-extensions (cl-set-difference dired-omit-extensions (list ".bin" ".lib" ".dll") :test #'equal)))
 
 (defun ento/run-process-as-admin ()
   "Run the program under the dired cursor as administrator in windows."
@@ -375,10 +376,21 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 ** Os specific
 *** CL Build tools
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defvar ento/default-exec-path exec-path
+  "Store the default exec path of emacs before using build tools")
+
+(defvar ento/default-eshell-path eshell-path-env
+  "Store the default eshell path before using build tools")
+
 (defvar ento/default-windows-path (getenv "PATH")
   "Store the default windows path before using build tools")
 
-(defun msbuild-2019-x86-setup ()
+(defun ento/restore-enviorment ()
+  (setenv "PATH" ento/default-windows-path)
+  (setq eshell-path-env ento/default-eshell-path)
+  (setq exec-path ento/default-exec-path))
+
+(defun ento/msbuild-2019-x86-setup ()
   "Set enviorment variables to load Microsoft Visual C++ Compiler (MSVC 32 bits)"
   (interactive)
   (message "Setting 32 bits MSVC building tools.")
@@ -443,7 +455,15 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
            ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja"
            ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\VC\\Linux\\bin\\ConnectionManagerExe"
            ))
-  (setq eshell-env-path (getenv "PATH")))
+  (setenv "EWDK_DIR" "C:\\EWDK")
+  (setenv "VisualStudioVersion" "16.0")
+  (setenv "VCToolsVersion" "14.29.30133")
+  (setenv "VS_ENV_BAT_FILE" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build")
+  ;; Remember that Win32 is the correct platform for windows :-
+  (setq projectile-project-compilation-cmd "msbuild /p:Platform=Win32 /p:Configuration=Debug -m")
+  ;; Set eshell and Emacs path as well
+  (setq eshell-env-path (getenv "PATH"))
+  (setq exec-path (split-string (getenv "PATH") ";")))
 #+end_src
 
 *** Gaming
@@ -480,12 +500,13 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 (defun ento/open-terminal-in-working-dir ()
     "Open terminal in current working directory"
     (interactive)
-    (call-process-shell-command "wt C:\\Program Files\\PowerShell\\7\\pwsh.exe" nil 0))
+    (call-process-shell-command (concat "wt -d " default-directory " C:\\Program Files\\PowerShell\\7\\pwsh.exe") nil 0))
 
 (defun ento/open-cmd-terminal-in-working-dir ()
     "Open terminal in current working directory"
     (interactive)
-    (call-process-shell-command "wt cmd.exe" nil 0))
+    (message "%s" default-directory)
+    (call-process-shell-command (concat "wt -d " default-directory " cmd.exe") nil 0))
 
 (map! :leader
       "<f8>" #'ento/open-cmd-terminal-in-working-dir)
@@ -529,8 +550,14 @@ Set the prefered file encodign to utf-8 in any operating system
 
 ** Dci
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+;; Load dci setup
 (if (file-exists-p "C:\\Git\\dci-emacs\\dci.el")
     (load "C:\\Git\\dci-emacs\\dci.el"))
+
+;; Load gaming setup
+(if (file-exists-p "C:\\Git\\dci-emacs\\gaming.el")
+    (load "C:\\Git\\dci-emacs\\gaming.el"))
+
 (map! :desc "Run kowalski." "<f5>" #'dci-run-kowalski)
 (map! :desc "Add dci log." "<f2>" #'dci-new-log-buffer)
 #+end_src
@@ -539,9 +566,37 @@ Set the prefered file encodign to utf-8 in any operating system
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (map! :desc "Run calculator." "<f4>" #'calc)
 #+end_src
+
 ** Bash shell
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun bash-on-windows-shell ()
   (let ((explicit-shell-file-name "C:/Windows/System32/bash.exe"))
     (shell)))
+#+end_src
+
+** RG
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/fast-rg ()
+  "Run rg with the thing at point."
+  (interactive)
+  (rg (current-word) "*" default-directory))
+
+(map! :leader
+      :nv
+      :desc "Toggle EPOS Connect service"
+      "r" #'ento/fast-rg)
+#+end_src
+
+** Json
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/validate-json ()
+  (interactive)
+  (let ((string-to-check (sentence-at-point)))
+
+    (condition-case nil
+        (progn (json-parse-string string-to-check)
+               (message "Valid Json")
+               t)
+      (message "Not a valid Json")
+      (error nil))))
 #+end_src
