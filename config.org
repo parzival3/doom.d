@@ -76,54 +76,54 @@
   ;;      directory (for easy access to its source code).
 
   (doom!
-	 :completion
-	 company             ; the ultimate code completion backend
-	 vertico             ; the search engine of the future
+     :completion
+     company             ; the ultimate code completion backend
+     vertico             ; the search engine of the future
 
-	 :ui
-	 doom                ; what makes DOOM look the way it does
-	 hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-	 modeline            ; snazzy, Atom-inspired modeline, plus API
-	 (popup +defaults)   ; tame sudden yet inevitable temporary windows
-	 workspaces          ; tab emulation, persistence & separate workspaces
+     :ui
+     doom                ; what makes DOOM look the way it does
+     hl-todo             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+     modeline            ; snazzy, Atom-inspired modeline, plus API
+     (popup +defaults)   ; tame sudden yet inevitable temporary windows
+     workspaces          ; tab emulation, persistence & separate workspaces
 
-	 :editor
-	
-	 (evil +everywhere)  ; come to the dark side, we have cookies
+     :editor
+
+     (evil +everywhere)  ; come to the dark side, we have cookies
          fold
-	 file-templates      ; auto-snippets for empty files
+     file-templates      ; auto-snippets for empty files
 
-	 :emacs
-	 dired               ; making dired pretty [functional]
-	 undo                ; persistent, smarter undo for your inevitable mistakes
+     :emacs
+     dired               ; making dired pretty [functional]
+     undo                ; persistent, smarter undo for your inevitable mistakes
 
-	 :term
-	 eshell              ; the elisp shell that works everywhere
+     :term
+     eshell              ; the elisp shell that works everywhere
 
-	 :checkers
-	 syntax              ; tasing you for every semicolon you forget
+     :checkers
+     syntax              ; tasing you for every semicolon you forget
 
-	 :tools
-	 (eval +overlay)     ; run code, run (also, repls)
-	 lookup              ; navigate your code and its documentation
-	 magit               ; a git porcelain for Emacs
+     :tools
+     (eval +overlay)     ; run code, run (also, repls)
+     lookup              ; navigate your code and its documentation
+     magit               ; a git porcelain for Emacs
 
-	 :os
-	 (:if IS-MAC macos)  ; improve compatibility with macOS
-	 tty                 ; improve the terminal Emacs experience
+     :os
+     (:if IS-MAC macos)  ; improve compatibility with macOS
+     tty                 ; improve the terminal Emacs experience
 
-	 ;;(cc                 ; C/C++/Obj-C madness
-	 ;;+lsp)
-	 :lang
-	 emacs-lisp          ; drown in parentheses
-	 (org +jira)         ; organize your plain life in plain text
-	 python              ; beautiful is better than ugly
-	 sh                  ; she sells {ba,z,fi}sh shells on the C xor
-	 yaml                ; JSON, but readable
+     ;;(cc                 ; C/C++/Obj-C madness
+     ;;+lsp)
+     :lang
+     emacs-lisp          ; drown in parentheses
+     (org +jira)         ; organize your plain life in plain text
+     python              ; beautiful is better than ugly
+     sh                  ; she sells {ba,z,fi}sh shells on the C xor
+     yaml                ; JSON, but readable
 
-	 :config
-	 literate
-	 (default +bindings +smartparens))
+     :config
+     literate
+     (default +bindings +smartparens))
 #+end_src
 
 #+RESULTS:
@@ -354,6 +354,18 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
       (setq flycheck-python-pyright-executable "python"))))
 #+end_src
 
+** Projectile or porject module in doom
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/open-project-notes ()
+  "Function for opening the project notes."
+  (interactive)
+  (find-file (+org-capture-project-notes-file)))
+
+(map! :after org-capture
+      :map projectile-mode-map
+      :leader
+      "pn" #'ento/open-project-notes)
+#+end_src
 ** Eshell
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun ento/eshell-no-git-prompt-fn ()
@@ -372,6 +384,26 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
   :config
   (setq eshell-prompt-regexp "^.* > ")
   (setq eshell-prompt-function 'ento/eshell-no-git-prompt-fn))
+#+end_src
+** C++
+Add microsoft as default style for c++ since is the one we are currently using in dci [[https://www.emacswiki.org/emacs/IndentingC][taken from here]].
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(c-add-style "microsoft"
+             '("stroustrup"
+               (c-offsets-alist
+                (innamespace . -)
+                (inline-open . 0)
+                (inher-cont . c-lineup-multi-inher)
+                (arglist-cont-nonempty . +)
+                (template-args-cont . +))))
+
+(setq c-default-syle (cons '(c++-mode . "microsoft") c-default-style))
+#+end_src
+** Bookmarks
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(use-package! bookmark
+  :init
+  (setq bookmark-default-file "~/.emacs_bookmarks"))
 #+end_src
 ** Os specific
 *** CL Build tools
