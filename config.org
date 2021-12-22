@@ -615,9 +615,16 @@ Set the prefered file encodign to utf-8 in any operating system
 ** RG
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun ento/fast-rg ()
-  "Run rg with the thing at point."
   (interactive)
-  (rg (current-word) "*" default-directory))
+  (let ((word (current-word)))
+    (minibuffer-with-setup-hook
+        (lambda () (insert word))
+    (call-interactively 'ento/fast-rg-impl))))
+
+(defun ento/fast-rg-impl (word)
+  "Run rg with the thing at point."
+  (interactive "sWord to search: ")
+  (rg word "*" default-directory))
 
 (map! :leader
       :nv
