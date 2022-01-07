@@ -90,7 +90,7 @@
      :editor
 
      (evil +everywhere)  ; come to the dark side, we have cookies
-         fold
+     fold
      file-templates      ; auto-snippets for empty files
 
      :emacs
@@ -290,11 +290,6 @@
                       :clang (:resourceDir "C:\\Program Files\\LLVM\\lib\\clang\\13.0.0\\"))))))
 ;;#+end_src
 
-** CC/++
-
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(setq flycheck-global-modes '(not c++-mode cc-mode))
-#+end_src
 ** Dired
 I have some trouble with the default dired and ~Windows~ that's why for only Windows I use the *dired+* package
 
@@ -386,6 +381,9 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
   (setq eshell-prompt-function 'ento/eshell-no-git-prompt-fn))
 #+end_src
 ** C++
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(setq flycheck-global-modes '(not c++-mode cc-mode))
+#+end_src
 Add microsoft as default style for c++ since is the one we are currently using in dci [[https://www.emacswiki.org/emacs/IndentingC][taken from here]].
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (setq c-basic-offset 4)
@@ -408,6 +406,13 @@ Add microsoft as default style for c++ since is the one we are currently using i
   (setq bookmark-default-file "~/.emacs_bookmarks"))
 #+end_src
 ** Os specific
+I don't know why but now chocolatey and cygwin are not picked up from my environment varialbes...
+#+begin_src emacs-lisp
+(setenv "PATH" (concat (getenv "PATH") ";" "C:\\cygwin64\\bin\\"))
+(setenv "PATH" (concat (getenv "PATH") ";" "C:\\ProgramData\\chocolatey\\bin"))
+(setq exec-path (split-string (getenv "PATH") ";"))
+
+#+end_src
 *** CL Build tools
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defvar ento/default-exec-path exec-path
@@ -499,9 +504,16 @@ Add microsoft as default style for c++ since is the one we are currently using i
   (setq eshell-env-path (getenv "PATH"))
   (setq exec-path (split-string (getenv "PATH") ";")))
 #+end_src
+
 *** MSVC Error on compilation buffer
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(setf (alist-get 'msft compilation-error-regexp-alist-alist) '("^ *\\([0-9]+>\\)?\\(\\(?:[a-zA-Z]:\\)?[^ :(	][^:(	]*\\)(\\([0-9]+\\),?[0-9]+?) ?: \\(?:see declaration\\|\\(?:warnin\\(g\\)\\|[a-z ]+\\) C[0-9]+:\\)" 2 3 nil (4)))
+(setf (alist-get 'msft compilation-error-regexp-alist-alist)
+      '("^ *\\([0-9]+>\\)?\\(\\(?:[a-zA-Z]:\\)?[^ :(	][^:(	]*\\)(\\([0-9]+\\),?[0-9]+?) ?: \\(?:see declaration\\|\\(?:warnin\\(g\\)\\|[a-z ]+\\) C[0-9]+:\\)" 2 3 nil (4)))
+#+end_src
+
+Keep only the intresting languages for the compile regex
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(setq compilation-error-regexp-alist '(bash cmake cmake-info msft clang-include gcc-include gmake))
 #+end_src
 
 *** Gaming
@@ -512,8 +524,12 @@ Add microsoft as default style for c++ since is the one we are currently using i
   (interactive)
   (start-process "GamingSuite" nil "C:/Git/pc_gaming_suite/Solution/Release/EposGamingSuite.exe"))
 
+
 (map! "<f3>"
   #'ento/lunch-gaming-suite)
+
+(map! "<f2>"
+  #'gaming-kill-gs)
 #+end_src
 
 *** Windows
@@ -616,10 +632,12 @@ Set the prefered file encodign to utf-8 in any operating system
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (defun ento/fast-rg ()
   (interactive)
-  (let ((word (current-word)))
+  (let ((word (if (current-word)
+                  (current-word)
+                "")))
     (minibuffer-with-setup-hook
         (lambda () (insert word))
-    (call-interactively 'ento/fast-rg-impl))))
+      (call-interactively 'ento/fast-rg-impl))))
 
 (defun ento/fast-rg-impl (word)
   "Run rg with the thing at point."
