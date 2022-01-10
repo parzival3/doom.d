@@ -53,7 +53,6 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
-(package! org-fancy-priorities)
 (package! dired+)
 (package! rg)
 #+end_src
@@ -116,6 +115,7 @@
      ;;+lsp)
      :lang
      emacs-lisp          ; drown in parentheses
+     racket
      (org +jira)         ; organize your plain life in plain text
      python              ; beautiful is better than ugly
      sh                  ; she sells {ba,z,fi}sh shells on the C xor
@@ -129,6 +129,7 @@
 #+RESULTS:
 
 * Config
+
 ** Config header
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
@@ -252,13 +253,6 @@
 
 ** Org Mode
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-;; Orgmode
-;;
-(setq org-agenda-files '("~/org/thesis.org"))
-(use-package! org-fancy-priorities
-  :hook (org-mode . org-fancy-priorities-mode)
-  :config (setq org-fancy-priorities-list '("⚡" "⬆" "⬇" "☕")))
-
 ;; add python as a org language
 (use-package! org
   :config
@@ -407,7 +401,7 @@ Add microsoft as default style for c++ since is the one we are currently using i
 #+end_src
 ** Os specific
 I don't know why but now chocolatey and cygwin are not picked up from my environment varialbes...
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (setenv "PATH" (concat (getenv "PATH") ";" "C:\\cygwin64\\bin\\"))
 (setenv "PATH" (concat (getenv "PATH") ";" "C:\\ProgramData\\chocolatey\\bin"))
 (setq exec-path (split-string (getenv "PATH") ";"))
@@ -662,4 +656,12 @@ Set the prefered file encodign to utf-8 in any operating system
                t)
       (message "Not a valid Json")
       (error nil))))
+#+end_src
+** Elisp
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(defun ento/add-path-to-load ()
+  (interactive)
+  (if (not (cl-intersection load-path (list default-directory)))
+      (setq load-path (cons default-directory load-path))
+    (message "Current path already present in the load-path")))
 #+end_src
