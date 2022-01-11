@@ -665,3 +665,8 @@ Set the prefered file encodign to utf-8 in any operating system
       (setq load-path (cons default-directory load-path))
     (message "Current path already present in the load-path")))
 #+end_src
+
+** Buffers
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(map! "C-x C-b" #'ibuffer)
+#+end_src
