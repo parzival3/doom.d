@@ -240,6 +240,37 @@
           (interactive)
           (magit-mode-setup #'magit-staging-mode)))))
 
+;; Hooks for vc-next-action
+(defun commit-filename ()
+"File name to add to the header of a git commit."
+  (let* ((root (project-root (project-current)))
+         (file-name (file-name-sans-extension buffer-file-name))
+         (extension (file-name-extension buffer-file-name))
+         (final-file-name (mapconcat #'identity
+                                     (cl-remove-duplicates (split-string (file-relative-name file-name root))
+                                                           :test #'string-equal) ":")))
+         (when (or (string-equal extension "c")
+                 (string-equal extension "h")
+                 (string-equal extension "cpp")
+                 (string-equal extension "hpp"))
+                (setq final-file-name (format "%s:%s" final-file-name extension)))
+         (concat final-file-name ": ")))
+
+(defun insert-preamble (preamble)
+"Insert the PREAMBLE (aka filepath:filename) in the git commit."
+  (when (equal (buffer-name) "*vc-log*")
+                   (insert preamble)))
+
+(defun vc-log-advice (orig-fun &rest args)
+  "Advice the 'vc-next-action' function with inser-preamble.
+The arguments are ORIG-FUN (vc-next-action) and ARGS the argument
+of 'vc-next-action'."
+  (let ((preamble (commit-filename)))
+    (apply orig-fun args)
+    (insert-preamble preamble)))
+
+;; Advicing vc-next-action
+(advice-add 'vc-next-action :around #'vc-log-advice)
 #+end_src
 
 ** Line number
@@ -311,6 +342,11 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
       :map dired-mode-map
       :leader
       "<f1>" #'ento/run-process-as-admin)
+
+
+(map! :after dired-mode
+      :map dired-mode-map
+      :leader "y" #'(lambda (x) (car (dired-get-marked-files))))
 
 #+end_src
 
@@ -385,7 +421,7 @@ Add microsoft as default style for c++ since is the one we are currently using i
              '("stroustrup"
                (c-offsets-alist
                 (substatement-open . 0)
-                (innamespace . -)
+                (innamespace . +)
                 (inline-open . 0)
                 (inher-cont . c-lineup-multi-inher)
                 (arglist-cont-nonempty . +)
@@ -399,6 +435,7 @@ Add microsoft as default style for c++ since is the one we are currently using i
   :init
   (setq bookmark-default-file "~/.emacs_bookmarks"))
 #+end_src
+
 ** Os specific
 I don't know why but now chocolatey and cygwin are not picked up from my environment varialbes...
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
@@ -406,6 +443,11 @@ I don't know why but now chocolatey and cygwin are not picked up from my environ
 (setenv "PATH" (concat (getenv "PATH") ";" "C:\\ProgramData\\chocolatey\\bin"))
 (setq exec-path (split-string (getenv "PATH") ";"))
 
+#+end_src
+*** Go
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(setenv "PATH" (concat (getenv "PATH") ";" "C:\\Program Files\\Go\\bin\\"))
+(setq exec-path (split-string (getenv "PATH") ";"))
 #+end_src
 *** CL Build tools
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
