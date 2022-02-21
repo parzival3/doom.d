@@ -243,6 +243,7 @@
 ;; Hooks for vc-next-action
 (defun commit-filename ()
 "File name to add to the header of a git commit."
+  (require 'project)
   (let* ((root (project-root (project-current)))
          (file-name (file-name-sans-extension buffer-file-name))
          (extension (file-name-extension buffer-file-name))
@@ -271,6 +272,42 @@ of 'vc-next-action'."
 
 ;; Advicing vc-next-action
 (advice-add 'vc-next-action :around #'vc-log-advice)
+
+(map! "<f1>" #'vc-next-action)
+
+
+(defun git-dired-changes (dir)
+  (interactive
+   "DDirectory inside a git repository: \n")
+  (condition-case nil
+      (dired (cons "*git-dired*" (git-status-files dir)))
+    (error (message "Execution of git-ls-files failed"))))
+
+(defun git-dired-changes-current ()
+  (interactive)
+  (condition-case nil
+      (dired (cons "*git-dired*" (git-status-files (projectile-project-root))))
+    (error (message "Execution of git-ls-files failed"))))
+
+(defun git-status-files (dir)
+  (save-excursion
+    (cd dir)
+    (split-string
+     ;; The following is shell-command-to-string with error handling added.
+     (with-output-to-string
+       (with-current-buffer
+           standard-output
+         (unless (= 0 (call-process shell-file-name nil t nil
+                                    ;; TODO: remove awak an process the string in emacs
+                                    shell-command-switch "git status -s --untracked-files=no --ignore-submodules=all | awk '{print $2}'"))
+           (error "Not a git repo")))))))
+
+(map! "<f13>" #'git-dired-changes-current)
+#+end_src
+** Remove Doom configs
+For some reason, this takes an incredible ammount of time
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(advice-remove #'delete-backward-char #'+default--delete-backward-char-a)
 #+end_src
 
 ** Line number
@@ -305,14 +342,14 @@ of 'vc-next-action'."
 ;;#+begin_src emacs-lisp
 ;; CCLS settings
 ;;
-(use-package! ccls
-  :init
-  (if (eq system-type 'windows-nt)
-      (progn (setq ccls-executable "ccls.exe")
-              (setq ccls-initialization-options
-                    `(:cache (:directory "C:\\Cache\\")
-                      :compilationDatabaseDirectory "./build/"
-                      :clang (:resourceDir "C:\\Program Files\\LLVM\\lib\\clang\\13.0.0\\"))))))
+;;(use-package! ccls
+;;  :init
+;;  (if (eq system-type 'windows-nt)
+;;      (progn (setq ccls-executable "ccls.exe")
+;;              (setq ccls-initialization-options
+;;                    `(:cache (:directory "C:\\Cache\\")
+;;                      :compilationDatabaseDirectory "./build/"
+;;                      :clang (:resourceDir "C:\\Program Files\\LLVM\\lib\\clang\\13.0.0\\"))))))
 ;;#+end_src
 
 ** Dired
