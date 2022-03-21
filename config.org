@@ -277,7 +277,7 @@ of 'vc-next-action'."
 (map! "<f1>" #'vc-next-action)
 (map! "<f14>" #'magit-diff-buffer-file)
 (map! "<f15>" #'magit-push-current)
-
+(map! "<f16>" #'(lambda () (interactive) (magit-log-current nil '("-5"))))
 
 (defun git-dired-changes (dir)
   (interactive
