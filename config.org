@@ -274,10 +274,11 @@ of 'vc-next-action'."
 ;; Advicing vc-next-action
 (advice-add 'vc-next-action :around #'vc-log-advice)
 
-(map! "<f1>" #'vc-next-action)
+(map! "<f1>"  #'vc-next-action)
 (map! "<f14>" #'magit-diff-buffer-file)
-(map! "<f15>" #'magit-push-current)
-(map! "<f16>" #'(lambda () (interactive) (magit-log-current nil '("-5"))))
+(map! "<f15>" #'(lambda () (interactive) (magit-log-current nil '("-5"))))
+(map! "<f16>" #'magit-branch-checkout)
+(map! "<f20>" #'magit-push-current)
 
 (defun git-dired-changes (dir)
   (interactive
