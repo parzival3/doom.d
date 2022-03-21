@@ -120,6 +120,7 @@
      python              ; beautiful is better than ugly
      sh                  ; she sells {ba,z,fi}sh shells on the C xor
      yaml                ; JSON, but readable
+     clojure             ; modern lisp
 
      :config
      literate
@@ -274,6 +275,7 @@ of 'vc-next-action'."
 (advice-add 'vc-next-action :around #'vc-log-advice)
 
 (map! "<f1>" #'vc-next-action)
+(map! "<f14>" #'magit-diff-buffer-file)
 
 
 (defun git-dired-changes (dir)
@@ -486,108 +488,6 @@ I don't know why but now chocolatey and cygwin are not picked up from my environ
 (setenv "PATH" (concat (getenv "PATH") ";" "C:\\Program Files\\Go\\bin\\"))
 (setq exec-path (split-string (getenv "PATH") ";"))
 #+end_src
-*** CL Build tools
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(defvar ento/default-exec-path exec-path
-  "Store the default exec path of emacs before using build tools")
-
-(defvar ento/default-eshell-path eshell-path-env
-  "Store the default eshell path before using build tools")
-
-(defvar ento/default-windows-path (getenv "PATH")
-  "Store the default windows path before using build tools")
-
-(defun ento/restore-enviorment ()
-  (setenv "PATH" ento/default-windows-path)
-  (setq eshell-path-env ento/default-eshell-path)
-  (setq exec-path ento/default-exec-path))
-
-(defun ento/msbuild-2019-x86-setup ()
-  "Set enviorment variables to load Microsoft Visual C++ Compiler (MSVC 32 bits)"
-  (interactive)
-  (message "Setting 32 bits MSVC building tools.")
-  (setenv "PATH" ento/default-windows-path)
-  (setenv "INCLUDE"
-          (concat
-           "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\ATLMFC\\include"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\include"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\include\\um"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\ucrt"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\shared"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\um"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\winrt"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.19041.0\\cppwinrt"
-           ))
-
-  (setenv "LIB"
-          (concat
-           "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\ATLMFC\\lib\\x64"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\NETFXSDK\\4.8\\lib\\um\\x64"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\lib\\10.0.19041.0\\ucrt\\x64"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\lib\\10.0.19041.0\\um\\x64"
-           ))
-
-  (setenv  "LIBPATH"
-           (concat
-            "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\ATLMFC\\lib\\x64"
-            ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x64"
-            ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\lib\\x86\\store\\references"
-            ";" "C:\\Program Files (x86)\\Windows Kits\\10\\UnionMetadata\\10.0.19041.0"
-            ";" "C:\\Program Files (x86)\\Windows Kits\\10\\References\\10.0.19041.0"
-            ";" "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319"
-            ))
-
-  (setenv "PATH"
-          (concat
-           (getenv "PATH")
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\Extensions\\Microsoft\\IntelliCode\\CLI"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\VC\\VCPackages"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\TeamFoundation\\Team Explorer"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\bin\\Roslyn"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\bin"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Performance Tools\\x64"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Team Tools\\Performance Tools"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Common\\VSPerfCollectionTools\\vs2019\\x64"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Common\\VSPerfCollectionTools\\vs2019"
-           ";" "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v10.0A\\bin\\NETFX 4.8 Tools\\x64"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\FSharp\\Tools"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools\\devinit"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x64"
-           ";" "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin"
-           ";" "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\Tools"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\Llvm\\bin"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\CMake\\bin"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja"
-           ";" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\Common7\\IDE\\VC\\Linux\\bin\\ConnectionManagerExe"
-           ))
-  (setenv "EWDK_DIR" "C:\\EWDK")
-  (setenv "VisualStudioVersion" "16.0")
-  (setenv "VCToolsVersion" "14.29.30133")
-  (setenv "VS_ENV_BAT_FILE" "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Auxiliary\\Build")
-  ;; Remember that Win32 is the correct platform for windows :-
-  (setq projectile-project-compilation-cmd "msbuild /p:Platform=Win32 /p:Configuration=Debug -m")
-  ;; Set eshell and Emacs path as well
-  (setq eshell-env-path (getenv "PATH"))
-  (setq exec-path (split-string (getenv "PATH") ";")))
-#+end_src
-
-*** MSVC Error on compilation buffer
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(setf (alist-get 'msft compilation-error-regexp-alist-alist)
-      '("^ *\\([0-9]+>\\)?\\(\\(?:[a-zA-Z]:\\)?[^ :(	][^:(	]*\\)(\\([0-9]+\\),?[0-9]+?) ?: \\(?:see declaration\\|\\(?:warnin\\(g\\)\\|[a-z ]+\\) C[0-9]+:\\)" 2 3 nil (4)))
-#+end_src
-
-Keep only the intresting languages for the compile regex
-#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
-(setq compilation-error-regexp-alist '(bash cmake cmake-info msft clang-include gcc-include gmake))
-#+end_src
 
 *** Gaming
 
@@ -684,6 +584,9 @@ Set the prefered file encodign to utf-8 in any operating system
 ;; Load gaming setup
 (if (file-exists-p "C:\\Git\\dci-emacs\\gaming.el")
     (load "C:\\Git\\dci-emacs\\gaming.el"))
+
+(if (file-exists-p "C:\\Git\\dci-emacs\\msvc.el")
+    (load "C:\\Git\\dci-emacs\\msvc.el"))
 
 (map! :desc "Run kowalski." "<f5>" #'dci-run-kowalski)
 (map! :desc "Add dci log." "<f2>" #'dci-new-log-buffer)
