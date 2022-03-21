@@ -276,6 +276,7 @@ of 'vc-next-action'."
 
 (map! "<f1>" #'vc-next-action)
 (map! "<f14>" #'magit-diff-buffer-file)
+(map! "<f15>" #'magit-push-current)
 
 
 (defun git-dired-changes (dir)
