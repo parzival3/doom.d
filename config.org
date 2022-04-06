@@ -55,6 +55,7 @@
 ;(unpin! t)
 (package! dired+)
 (package! rg)
+(package! clang-format+)
 #+end_src
 * Init
 #+begin_src emacs-lisp :tangle ~/.doom.d/init.el :filename init.el
@@ -274,11 +275,13 @@ of 'vc-next-action'."
 ;; Advicing vc-next-action
 (advice-add 'vc-next-action :around #'vc-log-advice)
 
-(map! "<f1>"  #'vc-next-action)
-(map! "<f14>" #'magit-diff-buffer-file)
-(map! "<f15>" #'(lambda () (interactive) (magit-log-current nil '("-5"))))
-(map! "<f16>" #'magit-branch-checkout)
-(map! "<f20>" #'magit-push-current)
+(map! "<f1>"    #'vc-next-action)
+(map! "<f14>"   #'magit-diff-buffer-file)
+(map! "<f15>"   #'(lambda () (interactive) (magit-log-current nil '("-20"))))
+(map! "<f16>"   #'magit-branch-checkout)
+(map! "<f20>"   #'magit-push-current)
+(map! "C-<f20>" #'magit-fetch-all)
+(map! "C-<f15>" #'magit-find-file)
 
 (defun git-dired-changes (dir)
   (interactive
@@ -454,6 +457,14 @@ I have some trouble with the default dired and ~Windows~ that's why for only Win
 ** C++
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
 (setq flycheck-global-modes '(not c++-mode cc-mode))
+#+end_src
+
+Set the clang-format executable on windows
+#+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
+(use-package! clang-format+-mode
+  :config
+  (when (eq system-type 'windows-nt)
+    (setq clang-format-executable "C:/Program Files/LLVM/bin/clang-format.exe")))
 #+end_src
 Add microsoft as default style for c++ since is the one we are currently using in dci [[https://www.emacswiki.org/emacs/IndentingC][taken from here]].
 #+begin_src emacs-lisp :tangle ~/.doom.d/config.el :filename config.el
